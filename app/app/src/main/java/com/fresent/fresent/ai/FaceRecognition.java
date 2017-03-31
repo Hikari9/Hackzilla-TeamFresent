@@ -14,6 +14,7 @@ import java.io.IOException;
  */
 public class FaceRecognition extends CvContextWrapper {
 
+
     public FaceRecognition(Context base) {
         super(base);
     }
@@ -54,9 +55,8 @@ public class FaceRecognition extends CvContextWrapper {
      */
     public boolean matchesClassifier(File classifier, Bitmap image) {
         File imageFile = saveImage(image, "test.jpg");
-        return nativeMatchesClassifier(classifier.getAbsolutePath(), imageFile.getAbsolutePath());
+        return new NativeFaceRecognition().nativeMatchesClassifier(classifier.getAbsolutePath(), imageFile.getAbsolutePath());
     }
 
-    public native boolean nativeMatchesClassifier(String filePath, String imagePath);
 
 }

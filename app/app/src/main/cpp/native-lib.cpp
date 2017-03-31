@@ -4,6 +4,33 @@
 
 /* NAMESPACE TEMPLATE */
 
+JNIEXPORT jboolean JNICALL
+Java_com_fresent_fresent_ai_NativeFaceRecognition_nativeMatchesClassifier(JNIEnv *env,
+                                                                          jobject instance,
+                                                                          jstring filePath_,
+                                                                          jstring imagePath_) {
+    const char *filePath = env->GetStringUTFChars(filePath_, 0);
+    const char *imagePath = env->GetStringUTFChars(imagePath_, 0);
+
+    // TODO
+
+    env->ReleaseStringUTFChars(filePath_, filePath);
+    env->ReleaseStringUTFChars(imagePath_, imagePath);
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_fresent_fresent_ai_FaceRecognition_NativeFaceRecognition_nativeMatchesClassifier(
+        JNIEnv *env, jobject instance, jstring filePath_, jstring imagePath_) {
+    const char *filePath = env->GetStringUTFChars(filePath_, 0);
+    const char *imagePath = env->GetStringUTFChars(imagePath_, 0);
+
+    // TODO
+
+    env->ReleaseStringUTFChars(filePath_, filePath);
+    env->ReleaseStringUTFChars(imagePath_, imagePath);
+}
+
 namespace face_recognition {
     bool match_classifier(const char *file, const char *image);
 }
