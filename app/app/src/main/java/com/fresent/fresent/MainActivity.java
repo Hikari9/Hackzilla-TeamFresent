@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewDebug;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,7 +23,12 @@ import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
 import com.fresent.fresent.camera.CameraActivity;
+import com.fresent.fresent.classes.ClassListAdapter;
+import com.fresent.fresent.models.ClassEntity;
 import com.fresent.fresent.models.StudentEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,6 +41,11 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = "MAIN";
     private static final int REQUEST_CAMERA = 1;
 
+    private static ArrayAdapter<ClassEntity> listAdapter;
+
+    private List<ClassEntity> classModels;
+    private ListView classListView;
+
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
@@ -41,6 +55,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Example of a call to a native method
+        /*
         final TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
 
@@ -56,16 +71,103 @@ public class MainActivity extends BaseActivity {
                     .show();
             }
         });
+
+        */
+
+
+        setContentView(R.layout.activity_main);
+
+        // FAB click listener
+        final FloatingActionButton newClassFab = (FloatingActionButton) findViewById(R.id.newClassFab);
+        newClassFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "TODO", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null)
+                        .show();
+            }
+        });
+
+        // List View
+        this.classModels = new ArrayList<ClassEntity>();
+        this.listAdapter = new ClassListAdapter( getApplicationContext(), this.classModels );
+        this.classListView = (ListView) findViewById( R.id.classListView );
+        this.classListView.setAdapter( listAdapter );
+        this.classListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Snackbar.make(view, "Wag mahihiyang magtanong...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null)
+                        .show();
+            }
+        });
+
+        // Fetching the Models
+        database().count(ClassEntity.class)
+                .get()
+                .consume(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) {
+                        if(integer == 0) {
+                            fillMockData();
+                            for(ClassEntity ce: classModels) {
+                                database().insert(ce);
+                            }
+                        } else {
+                            fillClassModel();
+                        }
+                    }
+                });
     }
 
-    @OnClick(R.id.fab)
+    private void fillMockData() {
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section A", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section B", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section C", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section CC", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section D", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section E", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section F", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section F1", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section G", "2016 - 2017", "2nd Sem") );
+        this.classModels.add( createClass("Introduction to CC", "CC101", "Section HH", "2016 - 2017", "2nd Sem") );
+        this.listAdapter.notifyDataSetChanged();
+    }
+
+    private void fillClassModel() {
+        database().select(ClassEntity.class)
+                .get()
+                .flowable()
+                .subscribe(new io.reactivex.functions.Consumer<ClassEntity>() {
+                    @Override
+                    public void accept(ClassEntity classEntity) throws Exception {
+                        MainActivity.this.classModels.add( classEntity );
+                        MainActivity.this.listAdapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    private ClassEntity createClass(String name, String courseCode, String section, String schoolYear, String schoolTerm) {
+        ClassEntity result = new ClassEntity();
+        result.setName(name);
+        result.setCourseCode(courseCode);
+        result.setSection(section);
+        result.setSchoolYear(schoolYear);
+        result.setSchoolTerm(schoolTerm);
+        return result;
+    }
+
+    @OnClick(R.id.newClassFab)
     public void onClickFab(View view) {
+        /*
         Log.d(TAG, "Starting camera activity");
         startActivityForResult(new Intent(this, CameraActivity.class), REQUEST_CAMERA);
+        */
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        /*
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == CameraActivity.RESULT_DENIED) {
@@ -86,12 +188,15 @@ public class MainActivity extends BaseActivity {
                 onReceiveImage(bitmap);
             }
         }
+        */
     }
 
     // TODO: do face recognition stuff on receive image from camera activity
     protected void onReceiveImage(Bitmap bitmap) {
+        /*
         Snackbar.make(getWindow().getDecorView(), "TODO: face detection", Snackbar.LENGTH_LONG)
             .show();
+        */
     }
 
     /**
