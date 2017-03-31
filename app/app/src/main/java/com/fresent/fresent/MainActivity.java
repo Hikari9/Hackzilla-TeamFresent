@@ -1,6 +1,9 @@
 package com.fresent.fresent;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +17,7 @@ import android.view.MenuItem;
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
+import com.fresent.fresent.camera.CameraActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,6 +25,9 @@ import butterknife.OnClick;
 @BindContentView(R.layout.activity_main)
 @BindToolbar(R.id.toolbar)
 public class MainActivity extends BaseActivity {
+
+    private static final String TAG = "MAIN";
+    private static final int REQUEST_CAMERA = 1;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -37,35 +44,38 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     public void onClickFab(View view) {
-        Snackbar.make(view, "TODO: open camera", Snackbar.LENGTH_LONG)
-            .setAction("Action", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            }).show();
+        Log.d(TAG, "Starting camera activity");
+        startActivityForResult(new Intent(this, CameraActivity.class), REQUEST_CAMERA);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CAMERA) {
+            if (resultCode == CameraActivity.RESULT_DENIED) {
+                // show snackbar that camera permission is required
+                Snackbar.make(getWindow().getDecorView(),
+                    "Camera is required to take pictures",
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Allow", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // request camera again
+                            onClickFab(v);
+                        }
+                    })
+                    .show();
+            } else if (resultCode == CameraActivity.RESULT_OK) {
+                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                onReceiveImage(bitmap);
+            }
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    // TODO: do face recognition stuff on receive image from camera activity
+    protected void onReceiveImage(Bitmap bitmap) {
+        Snackbar.make(getWindow().getDecorView(), "TODO: face detection", Snackbar.LENGTH_LONG)
+            .show();
     }
 
     /**
