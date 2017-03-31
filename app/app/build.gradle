@@ -39,5 +39,12 @@ dependencies {
     compile 'com.android.support:design:25.3.0'
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    // Requery: ORM database wrapper for SQLite
+    def requeryVersion = '1.2.1'
+    compile 'io.requery:requery:' + requeryVersion
+    compile 'io.requery:requery-android:' + requeryVersion // for android
+    annotationProcessor 'io.requery:requery-processor:' + requeryVersion
+
     testCompile 'junit:junit:4.12'
 }
