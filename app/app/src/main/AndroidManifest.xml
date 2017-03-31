@@ -28,8 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".camera.CameraActivity"></activity>
-        <activity android:name=".classes.AddClassActivity"></activity>
+        <activity android:name=".camera.CameraActivity" />
+        <activity android:name=".classes.AddClassActivity" />
+        <activity android:name=".student_attendance.FresentActivity"></activity>
     </application>
 
 </manifest>

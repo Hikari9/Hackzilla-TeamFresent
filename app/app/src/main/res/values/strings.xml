@@ -9,4 +9,12 @@
     <string name="class_schoolyear_label">SY:</string>
 
     <string name="class_sourceurl_label">QR:</string>
+
+    <string-array name="attendance_status">
+        <item>Unchecked</item>
+        <item>Present</item>
+        <item>Absent</item>
+        <item>Late</item>
+        <item>Excused</item>
+    </string-array>
 </resources>

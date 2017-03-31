@@ -27,6 +27,7 @@ import com.fresent.fresent.classes.AddClassActivity;
 import com.fresent.fresent.classes.ClassListAdapter;
 import com.fresent.fresent.models.ClassEntity;
 import com.fresent.fresent.models.StudentEntity;
+import com.fresent.fresent.student_attendance.FresentActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,7 @@ public class MainActivity extends BaseActivity {
         });
 
         // Fetching the Models
-        fillMockData();
+        fillClassModel();
     }
 
     private ClassEntity createClass(String name, String courseCode, String section, String schoolYear, String schoolTerm) {
@@ -136,9 +137,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void gotoClassViewActivity(ClassEntity model) {
-        Toast.makeText(getApplicationContext(),
-                "huwag mahihiyang magtanong", Toast.LENGTH_SHORT)
-                .show();
+        Intent next = new Intent( this, FresentActivity.class );
+        next.putExtra("data", model);
+        startActivity( next );
     }
 
     @OnClick(R.id.newClassFab)

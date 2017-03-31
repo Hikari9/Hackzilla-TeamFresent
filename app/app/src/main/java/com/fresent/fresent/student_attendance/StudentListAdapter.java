@@ -1,17 +1,20 @@
-package com.fresent.fresent.classes;
+package com.fresent.fresent.student_attendance;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fresent.fresent.R;
+import com.fresent.fresent.classes.ClassListAdapter;
 import com.fresent.fresent.models.Class;
 import com.fresent.fresent.models.ClassEntity;
+import com.fresent.fresent.models.StudentEntity;
 
 import java.util.List;
 
@@ -19,26 +22,26 @@ import java.util.List;
  * Created by Aemiel on 31 Mar 2017.
  */
 
-public class ClassListAdapter extends ArrayAdapter<ClassEntity> {
-
+public class StudentListAdapter extends ArrayAdapter<StudentEntity> {
     private Context mContext;
-    private List<ClassEntity> models;
-    private static final int LAYOUT = R.layout.class_list_item_view;
+    private List<StudentEntity> models;
+    private static final int LAYOUT = R.layout.student_list_item;
 
-    public ClassListAdapter(@NonNull Context context, @NonNull List<ClassEntity> objects) {
+    public StudentListAdapter(@NonNull Context context, @NonNull List<StudentEntity> objects) {
         super(context, LAYOUT, objects);
         this.mContext = context;
         this.models = objects;
     }
 
     private class ViewHolder {
-        TextView courseAndSectionTextView;
-        TextView studentCountTextView;
+        ImageView studentThumbnail;
+        TextView studentName;
+        Spinner attendanceStatus;
     }
 
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        ClassEntity model = getItem(position);
+        StudentEntity model = getItem(position);
         ViewHolder viewHolder;
 
         final View result;
@@ -46,10 +49,12 @@ public class ClassListAdapter extends ArrayAdapter<ClassEntity> {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from( getContext() );
             convertView = inflater.inflate( LAYOUT, parent, false );
-            viewHolder.courseAndSectionTextView =
-                    (TextView) convertView.findViewById( R.id.courseAndSectionTextView );
-            viewHolder.studentCountTextView =
+            viewHolder.studentThumbnail =
+                    (ImageView) convertView.findViewById( R.id.studentThumbnail );
+            viewHolder.studentName =
                     (TextView) convertView.findViewById( R.id.studentCountTextView );
+            viewHolder.attendanceStatus =
+                    (Spinner) convertView.findViewById( R.id.statusSpinner );
             result = convertView;
             convertView.setTag( viewHolder );
         } else {
@@ -57,14 +62,9 @@ public class ClassListAdapter extends ArrayAdapter<ClassEntity> {
             result = convertView;
         }
 
-        String courseSectionText = model.getCourseCode() + " - " + model.getSection();
-        int studentEnrolmentCount = model.getStudentEnrollments().toList().size();
-        String studentCountText = studentEnrolmentCount + " Student"
-                                    + (studentEnrolmentCount == 1?"":"s");
-        viewHolder.courseAndSectionTextView.setText( courseSectionText );
-        viewHolder.studentCountTextView.setText( studentCountText );
+        String name = model.getFirstName() + " " + model.getLastName();
+        viewHolder.studentName.setText( name );
 
         return convertView;
     }
-
 }
