@@ -65,9 +65,13 @@ def generate_classifiers(training_folder,
     # create a recognizer for each label
     for label_id, image_list in enumerate(label_images):
         label = label_labels[label_id]
+        
         # train recognizer
         recognizer = FaceRecognizer()
         recognizer.train(image_list, np.array([label_id] * len(image_list)))
+
+        # set label info for given string
+        recognizer.setLabelInfo(label_id, label)
 
         # Save classifier to text file
         file_name = label + '.xml'
