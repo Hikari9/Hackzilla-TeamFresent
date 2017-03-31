@@ -46,5 +46,9 @@ dependencies {
     compile 'io.requery:requery-android:' + requeryVersion // for android
     annotationProcessor 'io.requery:requery-processor:' + requeryVersion
 
+    def rxJavaVersion = '2.0.1'
+    compile 'io.reactivex.rxjava2:rxandroid:' + rxJavaVersion
+    compile 'io.reactivex.rxjava2:rxjava:' + rxJavaVersion
+
     testCompile 'junit:junit:4.12'
 }
