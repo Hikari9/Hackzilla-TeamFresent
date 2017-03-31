@@ -1,5 +1,7 @@
+import os, uuid
 from app import app, db
 from flask import request, jsonify
+from werkzeug.utils import secure_filename
 from .models import Student, Classroom
 
 @app.route( "/classroom/<classroom_id>", methods = ["GET"] )
@@ -19,12 +21,18 @@ def get_classifier( student_id ):		#TO DO
 		return student.id + " " + student.first_name
 	return jsonify( {} )
 
-@app.route( "/send_nudes/", methods = ["POST"] )
+@app.route( "/send_nudes", methods = ["POST"] )
 def post_nudes():
 	student_id = request.form["student_id"]
-	image = request.form["image"]
-	# TO DO
-	return student_id + " " + image
+	file = request.form["file"]
+	
+	target = open( os.path.join( app.config["IMAGE_UPLOAD_FOLDER"], student_id + "/" + str( uuid.uuid4() ) + ".jpg" ), "w" )
+	target.truncate()
+	
+	target.write( file )
+	target.close()
+	
+	return student_id + " uploaded an image."
 
 @app.route( "/tmp/add_classroom", methods = ["POST"] )
 def add_classroom():
@@ -49,6 +57,9 @@ def add_student():
 	s = Student( id = id, first_name = first_name, middle_name = middle_name, last_name = last_name )
 	db.session.add( s )
 	db.session.commit()
+	
+	os.makedirs( os.path.join( app.config["IMAGE_UPLOAD_FOLDER"], id + "/" ) )
+	
 	return s.first_name
 
 @app.route( "/tmp/enroll", methods = ["POST"] )
@@ -69,7 +80,7 @@ def enroll():
 	db.session.commit()
 	return "Student enrolled!"
 
-@app.route( "/tmp/delete" )
+@app.route( "/tmp/delete", methods = ["POST", "GET"] )
 def delete_all():
 	students = Student.query.all()
 	for s in students:
