@@ -82,9 +82,7 @@ public class MainActivity extends BaseActivity {
         newClassFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "TODO", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .show();
+                MainActivity.this.gotoAddClassEntityActivity( v );
             }
         });
 
@@ -96,9 +94,8 @@ public class MainActivity extends BaseActivity {
         this.classListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Snackbar.make(view, "Wag mahihiyang magtanong...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .show();
+                ClassEntity model = listAdapter.getItem( position );
+                MainActivity.this.gotoClassViewActivity( model );
             }
         });
 
@@ -155,6 +152,16 @@ public class MainActivity extends BaseActivity {
         result.setSchoolYear(schoolYear);
         result.setSchoolTerm(schoolTerm);
         return result;
+    private void gotoAddClassEntityActivity(View v) {
+        Toast.makeText(getApplicationContext(),
+                "FAB tapped", Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private void gotoClassViewActivity(ClassEntity model) {
+        Toast.makeText(getApplicationContext(),
+                "huwag mahihiyang magtanong", Toast.LENGTH_SHORT)
+                .show();
     }
 
     @OnClick(R.id.newClassFab)
