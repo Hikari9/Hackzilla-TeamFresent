@@ -7,7 +7,7 @@ def main():
     print('Generating classifiers...')
     training.generate_classifiers(TRAINING_FOLDER,
                                   CLASSIFIER_FOLDER,
-                                  algorithm=training.ALGO_LOCAL_BINARY_PATTERNS)
+                                  algorithm=training.ALGO_DEFAULT)
 
 if __name__ == '__main__':
     main()
