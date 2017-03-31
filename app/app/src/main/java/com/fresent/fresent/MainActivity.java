@@ -2,20 +2,16 @@ package com.fresent.fresent;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.hardware.camera2.params.Face;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fresent.fresent.ai.FaceDetection;
+import com.fresent.fresent.ai.FaceRecognition;
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
@@ -23,7 +19,6 @@ import com.fresent.fresent.camera.CameraActivity;
 
 import org.opencv.core.Rect;
 
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 @BindContentView(R.layout.activity_main)
@@ -53,6 +48,7 @@ public class MainActivity extends BaseActivity {
         startActivityForResult(new Intent(this, CameraActivity.class), REQUEST_CAMERA);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA) {
@@ -65,7 +61,7 @@ public class MainActivity extends BaseActivity {
                         @Override
                         public void onClick(View v) {
                             // request camera again
-                            onClickFab(v);
+                             onClickFab(v);
                         }
                     })
                     .show();
@@ -82,13 +78,6 @@ public class MainActivity extends BaseActivity {
         // convert Bitmap to Mat for OpenCV
         Rect[] faces = faceDetection.detectFaces(bitmap);
         Toast.makeText(this, "Detected faces: " + faces.length, Toast.LENGTH_LONG).show();
-//        Log.d(TAG, "Detected faces: " + faces.length);
-        // show image in image view with region of interest
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
 }
