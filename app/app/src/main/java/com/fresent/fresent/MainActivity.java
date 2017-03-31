@@ -103,6 +103,16 @@ public class MainActivity extends BaseActivity {
         fillMockData();
     }
 
+    private ClassEntity createClass(String name, String courseCode, String section, String schoolYear, String schoolTerm) {
+        ClassEntity result = new ClassEntity();
+        result.setName(name);
+        result.setCourseCode(courseCode);
+        result.setSection(section);
+        result.setSchoolYear(schoolYear);
+        result.setSchoolTerm(schoolTerm);
+        return result;
+    }
+
     private void fillMockData() {
         this.classModels.add( createClass("Introduction to CC", "CC101", "Section A", "2016 - 2017", "2nd Sem") );
         this.classModels.add( createClass("Introduction to CC", "CC101", "Section B", "2016 - 2017", "2nd Sem") );
