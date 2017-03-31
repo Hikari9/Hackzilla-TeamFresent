@@ -23,6 +23,7 @@ import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
 import com.fresent.fresent.camera.CameraActivity;
+import com.fresent.fresent.classes.AddClassActivity;
 import com.fresent.fresent.classes.ClassListAdapter;
 import com.fresent.fresent.models.ClassEntity;
 import com.fresent.fresent.models.StudentEntity;
@@ -40,6 +41,7 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MAIN";
     private static final int REQUEST_CAMERA = 1;
+    private static final int REQUEST_ADD_CLASSES = 2;
 
     private static ArrayAdapter<ClassEntity> listAdapter;
 
@@ -73,18 +75,6 @@ public class MainActivity extends BaseActivity {
         });
 
         */
-
-
-        setContentView(R.layout.activity_main);
-
-        // FAB click listener
-        final FloatingActionButton newClassFab = (FloatingActionButton) findViewById(R.id.newClassFab);
-        newClassFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.gotoAddClassEntityActivity( v );
-            }
-        });
 
         // List View
         this.classModels = new ArrayList<ClassEntity>();
@@ -140,10 +130,9 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-    private void gotoAddClassEntityActivity(View v) {
-        Toast.makeText(getApplicationContext(),
-                "FAB tapped", Toast.LENGTH_SHORT)
-                .show();
+    @OnClick(R.id.newClassFab)
+    protected void gotoAddClassEntityActivity(View v) {
+        startActivityForResult( new Intent(this, AddClassActivity.class), REQUEST_ADD_CLASSES );
     }
 
     private void gotoClassViewActivity(ClassEntity model) {
@@ -184,6 +173,31 @@ public class MainActivity extends BaseActivity {
             }
         }
         */
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_ADD_CLASSES) {
+            if(resultCode == RESULT_OK) {
+                String[] modelString = (String[]) data.getExtras().get("data");
+                ClassEntity newModel = new ClassEntity();
+                newModel.setName( modelString[0] );
+                newModel.setCourseCode( modelString[1] );
+                newModel.setSection( modelString[2] );
+                newModel.setSchoolTerm( modelString[3] );
+                newModel.setSchoolYear( modelString[4] );
+                String qrUrl = modelString[5];
+
+                fetchStudentData( newModel, qrUrl );
+
+                String className = newModel.getCourseCode() + " - " + newModel.getSection();
+                Toast.makeText(getApplicationContext(),
+                        "'" + className + "' successfully added", Toast.LENGTH_SHORT)
+                        .show();
+                onReceiveClassEntity( newModel );
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "anyare be?", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
     }
 
     // TODO: do face recognition stuff on receive image from camera activity
@@ -192,6 +206,16 @@ public class MainActivity extends BaseActivity {
         Snackbar.make(getWindow().getDecorView(), "TODO: face detection", Snackbar.LENGTH_LONG)
             .show();
         */
+    }
+
+    private void onReceiveClassEntity(ClassEntity newModel) {
+        database().upsert( newModel );
+        this.classModels.add( newModel );
+        this.listAdapter.notifyDataSetChanged();
+    }
+
+    private void fetchStudentData(ClassEntity model, String url) {
+        // TODO
     }
 
     /**
