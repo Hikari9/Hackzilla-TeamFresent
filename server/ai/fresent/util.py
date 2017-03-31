@@ -5,6 +5,9 @@ import numpy as np
 
 CASCADE_PATH = 'data/haarcascade_frontalface_default.xml'
 
+SIZE = 160
+MARGIN = 8
+
 def load_grayscale_image(image_file,
                          equalize_hist=True,
                          median_blur=3):
@@ -41,23 +44,32 @@ def viola_jones_detector(cascade_path=CASCADE_PATH):
 
     return __VIOLA_JONES_CASCADER
 
-def detect_faces(image, scaleFactor=1.1, minNeighbors=2, **kwargs):
+def get_roi_resized_rect(image, roi):
     image = load_grayscale_image(image)
-    return viola_jones_detector(**kwargs).detectMultiScale(image, **kwargs)
+    x, y, w, h = roi
+    mx = int(round(MARGIN*w/(SIZE-2*MARGIN)))
+    my = int(round(MARGIN*h/(SIZE-2*MARGIN)))
+    Y, H, X, W = (max(0, y-my), min(image.shape[0], y+h+my)-y, max(0, x-mx), min(image.shape[1], x+w+mx)-x)
+    return X, Y, W, H
+
+def get_resized_image(image, roi):
+    x, y, w, h = roi
+    img = image[y : y + h, x : x + w]
+    return cv2.resize(img, (SIZE, SIZE))
+
+def detect_faces(image, scaleFactor=1.1, minNeighbors=4, **kwargs):
+    image = load_grayscale_image(image)
+    faces = viola_jones_detector(**kwargs).detectMultiScale(image, scaleFactor=scaleFactor, minNeighbors=minNeighbors, **kwargs)
+    return [get_roi_resized_rect(image, face) for face in faces]
 
 # function that gets images with respective labels from a given folder
 def get_images_and_labels(folder,
-                          cascader=None,
-                          cascader_args={},
                           debug=False,
                           debug_faces=False,
-                          debug_accuracy=False,
                           **kwargs):
 
     labels = []
     images = []
-    added = 0
-    expected = 0
 
     for label in os.listdir(folder):
 
@@ -68,35 +80,25 @@ def get_images_and_labels(folder,
 
             for filename in os.listdir(path):
 
-                ok = 0
-                expected += 1
-
-                try:
-
-                    image_path = os.path.join(path, filename)
-                    image = load_grayscale_image(image_path, **kwargs)
-
-                    if cascader is not None:
-                        # get the face using Viola-Jones detector
-                        faces = cascader.detectMultiScale(image, **cascader_args)
-                        for (x, y, w, h) in faces:
-                            images.append(image[y:y+h, x:x+w])
-                            labels.append(label)
-                            if debug_faces:
-                                cv2.imshow('Adding faces to training set...', image[y:y+h, x:x+w])
-                                cv2.waitKey(50)
-                        ok += len(faces)
-                        if len(faces) > 0:
-                            added += 1
-                    else:
-                        images.append(image)
+                image_path = os.path.join(path, filename)
+                image = load_grayscale_image(image_path)
+                faces = detect_faces(image)
+                if len(faces) == 0:
+                    image = cv2.resize(image, (SIZE, SIZE))
+                    images.append(image)
+                    labels.append(label)
+                    if debug_faces:
+                        cv2.imshow('Adding faces to training set...', image)
+                        cv2.waitKey(50)
+                else:
+                    for roi in faces[:1]:
+                        x, y, w, h = roi
+                        imageROI = get_resized_image(image, roi)
+                        images.append(imageROI)
                         labels.append(label)
-                        ok = 1
-                        added += 1
-
-                except Exception as e:
-                    print(e)
-                    pass
+                        if debug_faces:
+                            cv2.imshow('Adding faces to training set...', imageROI)
+                            cv2.waitKey(50)
 
                 if debug: print('\t' + filename + (' [%d face]' % ok))
 
@@ -104,8 +106,5 @@ def get_images_and_labels(folder,
 
     if debug_faces:
         cv2.destroyAllWindows()
-
-    if debug_accuracy:
-        print('Accuracy: %.5f%%' % (100 * added / max(1, expected)))
 
     return images, labels

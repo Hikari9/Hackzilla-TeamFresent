@@ -7,10 +7,12 @@ import fresent.util as util
 
 # Match a face with a group of classifiers using LBPH algorithm
 # (image, classifier_path [, algorithm]) -> [(distance, label string) in ascending order]
-def predict_face(image, classifier_path, algorithm=train.ALGO_LOCAL_BINARY_PATTERNS):
+def predict_face(image, classifier_path, algorithm=train.ALGO_DEFAULT, preprocess=True):
 
-    image = util.load_grayscale_image(image)
-    image = cv2.resize(image, (182, 182))
+    if preprocess:
+        image = util.load_grayscale_image(image)
+        image = util.get_resized_image(image)
+
     FaceRecognizer = algorithm
 
     # get the label with the min distance (i.e. max confidence)
@@ -27,7 +29,7 @@ def predict_face(image, classifier_path, algorithm=train.ALGO_LOCAL_BINARY_PATTE
         recognizer.load(classifier_path)
         label, distance = recognizer.predict(image)
         if label != -1:
-            return recognizer.getLabelInfo(label)
+            return (recognizer.getLabelInfo(label), distance)
 
     elif os.path.isdir(classifier_path):
         # predict with many classifiers
@@ -51,25 +53,22 @@ def predict_face(image, classifier_path, algorithm=train.ALGO_LOCAL_BINARY_PATTE
 # Gets all region of interest in the given image, and assigns it a unique label
 # Greedy assignment of images with by minimizing distance
 # (image, classifier_path [, algorithm]) -> {label: (x, y, w, h) ... }
-def predict_all_faces(image, classifier_path, algorithm=train.ALGO_LOCAL_BINARY_PATTERNS):
+def predict_all_faces(image, classifier_path,
+                      algorithm=train.ALGO_DEFAULT):
 
     image = util.load_grayscale_image(image)
     faces = util.detect_faces(image)
     heap = []
     index = 0
-    margin = 0
-    margin = 44>>1
-
-    for (x, y, w, h) in faces:
-
-        imageROI = image[y-margin:y+h+margin, x-margin:x+w+margin]
-        predictions = predict_face(imageROI, classifier_path, algorithm)
+    for roi in faces:
+        imageROI = util.get_resized_image(image, roi)
+        predictions = predict_face(imageROI, classifier_path, algorithm, preprocess=False)
 
         if predictions is None:
             continue
 
         if not isinstance(predictions, list):
-            heap.append((0, predictions, index))
+            heap.append((predictions[1], predictions[0], index))
 
         else:
             for distance, label_string in predictions:
@@ -85,7 +84,7 @@ def predict_all_faces(image, classifier_path, algorithm=train.ALGO_LOCAL_BINARY_
     for distance, label, index in heap:
         if not vis[index] and label not in assignment:
             # assign ROI rectangle to label_string
-            assignment[label] = faces[index]
+            assignment[label] = (faces[index], distance)
             vis[index] = True
 
     return assignment

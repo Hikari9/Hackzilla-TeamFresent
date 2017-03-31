@@ -5,20 +5,19 @@ import numpy as np
 from fresent.util import get_images_and_labels
 
 # constants
-CASCADE_NAME = 'haarcascade_frontalface_default.xml'
 ALGO_LOCAL_BINARY_PATTERNS = cv2.face.createLBPHFaceRecognizer
 ALGO_EIGEN = cv2.face.createEigenFaceRecognizer
 ALGO_FISHER = cv2.face.createFisherFaceRecognizer
+ALGO_DEFAULT = ALGO_LOCAL_BINARY_PATTERNS
 
 # perform training and generate classifiers
 def generate_classifiers(training_folder,
                          classifier_path,
                          one_big_classifier=True,
-                         algorithm=ALGO_LOCAL_BINARY_PATTERNS):
+                         algorithm=ALGO_DEFAULT):
 
     # Get images and labels
-    images, labels = get_images_and_labels(training_folder,
-                                           debug_accuracy=True)
+    images, labels = get_images_and_labels(training_folder)
 
     print('Collected %d images [%d labels]' % (len(images), len(set(labels))))
 
