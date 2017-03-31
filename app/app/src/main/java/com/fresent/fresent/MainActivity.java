@@ -74,6 +74,7 @@ public class MainActivity extends BaseActivity {
 
     // TODO: do face recognition stuff on receive image from camera activity
     protected void onReceiveImage(Bitmap bitmap) {
+        // convert Bitmap to Mat for OpenCV
         Snackbar.make(getWindow().getDecorView(), "TODO: face detection", Snackbar.LENGTH_LONG)
             .show();
     }
