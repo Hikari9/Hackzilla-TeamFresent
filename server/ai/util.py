@@ -1,55 +1,7 @@
-# perform training
-
 import cv2, cv2.face
 import os, os.path
 import sys
 import numpy as np
-
-# constants
-CASCADE_NAME = 'haarcascade_frontalface_default.xml'
-
-def generate_classifiers(training_folder, classifier_folder, cascade_folder):
-
-    # Check if classifier folder exists
-    if not os.path.exists(classifier_folder):
-        print('Creating folder `%s`' % classifier_folder)
-        os.makedirs(classifier_folder)
-
-    # Viola-Jones classifier for Haar feature extraction
-    cascade_path = os.path.join(cascade_folder, CASCADE_NAME)
-    cascader = cv2.CascadeClassifier(cascade_path)
-    assert(not cascader.empty())
-
-    # Setup cascader args
-    cascader_args = {
-        'scaleFactor': 1.1,
-        'minNeighbors': 2,
-        'flags': 2
-    }
-
-    # Get images and labels
-    images, labels = get_images_and_labels(training_folder,
-                                           cascader=cascader,
-                                           cascader_args=cascader_args,
-                                           debug_accuracy=True)
-
-    print('Collected %d images [%d labels]' % (len(images), len(set(labels))))
-
-    for label in set(labels):
-        recognizer = cv2.face.createLBPHFaceRecognizer()
-
-        # create a binary recognizer per image
-        # current complexity: O(n^2)
-        # TODO: optimize this and integrate to TensorFlow
-        recognizer.train(images, np.array([1 if label == cur_label else 0 for image, cur_label in zip(images, labels)]))
-
-        # Save classifier to text file
-        file_name = label + '.xml'
-        file_path = os.path.join(classifier_folder, file_name)
-
-        recognizer.save(file_path)
-        print('Saved classifier ' + os.path.abspath(file_path))
-
 
 # function that gets images with respective labels from a given folder
 def get_images_and_labels(folder,
@@ -132,11 +84,3 @@ def get_images_and_labels(folder,
         print('Accuracy: %.5f%%' % (100 * added / max(1, expected)))
 
     return images, labels
-
-
-if __name__ == '__main__':
-    args = sys.argv
-    if len(args) < 3:
-        print('Usage: python %s <training_folder> <classifier_folder> [<cascade_folder>]' % args[0])
-    else:
-        generate_classifiers(args[1], args[2], '../data/' if len(args) == 3 else args[3])
