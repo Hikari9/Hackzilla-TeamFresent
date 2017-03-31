@@ -16,18 +16,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FaceDetection extends ContextWrapper  {
+public class FaceDetection extends ContextWrapper {
 
     public static final String CASCADE_CLASSIFIER = "haarcascade_frontalface_default.xml";
     private static final String TAG = "FACE_DETECTION";
     private float relativeFaceSize = 0.2f; // tweak this
     private int absoluteFaceSize = 0;
 
+    public CascadeClassifier getViolaJonesClassifier() {
+        return violaJonesClassifier;
+    }
+
     private CascadeClassifier violaJonesClassifier;
 
     public FaceDetection(Context context) {
         super(context);
-        loadOpenCV();
+        loadClassifier();
     }
 
     public float getRelativeFaceSize() {
@@ -46,7 +50,7 @@ public class FaceDetection extends ContextWrapper  {
         this.absoluteFaceSize = absoluteFaceSize;
     }
 
-    private void loadOpenCV() {
+    public void loadClassifier() {
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, loaderCallback);

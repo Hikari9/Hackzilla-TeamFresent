@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.fresent.fresent.ai.FaceDetection;
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
@@ -28,18 +29,24 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MAIN";
     private static final int REQUEST_CAMERA = 1;
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+    FaceDetection faceDetection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        faceDetection = new FaceDetection(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (faceDetection.getViolaJonesClassifier() == null)
+            faceDetection.loadClassifier();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @OnClick(R.id.fab)
