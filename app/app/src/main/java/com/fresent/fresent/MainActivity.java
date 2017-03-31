@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == CameraActivity.RESULT_DENIED) {
                 // show snackbar that camera permission is required
-                Snackbar.make(getWindow().getDecorView(),
+                Snackbar.make(findViewById(R.id.coordinator_layout),
                     "Camera is required to take pictures",
                     Snackbar.LENGTH_INDEFINITE)
                     .setAction("Allow", new View.OnClickListener() {

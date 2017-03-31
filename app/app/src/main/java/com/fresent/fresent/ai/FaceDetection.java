@@ -94,7 +94,7 @@ public class FaceDetection extends ContextWrapper {
     public void loadClassifier() {
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, loaderCallback);
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, loaderCallback);
         } else {
             Log.d(TAG, "OpenCV library found inside package. Using it.");
             loaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
