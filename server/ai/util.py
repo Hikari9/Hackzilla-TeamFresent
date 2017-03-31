@@ -24,7 +24,7 @@ def get_images_and_labels(folder,
                           cascader_args={},
                           debug=False,
                           debug_faces=False,
-                          debug_accuracy=True,
+                          debug_accuracy=False,
                           **kwargs):
 
     labels = []

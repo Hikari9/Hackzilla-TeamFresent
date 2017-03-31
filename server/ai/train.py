@@ -22,9 +22,11 @@ def generate_classifiers(training_folder,
         os.makedirs(classifier_folder)
 
     # Viola-Jones classifier for Haar feature extraction
-    cascade_path = os.path.join(cascade_folder, CASCADE_NAME)
-    cascader = cv2.CascadeClassifier(cascade_path)
-    assert(not cascader.empty())
+    cascader = None
+    if cascade_folder is not None:
+        cascade_path = os.path.join(cascade_folder, CASCADE_NAME)
+        cascader = cv2.CascadeClassifier(cascade_path)
+        assert(not cascader.empty())
 
     # Setup cascader args
     cascader_args = {
@@ -36,7 +38,6 @@ def generate_classifiers(training_folder,
     # Get images and labels
     images, labels = get_images_and_labels(training_folder,
                                            cascader=cascader,
-                                           detect_faces=algorithm is ALGO_LOCAL_BINARY_PATTERNS,
                                            cascader_args=cascader_args,
                                            debug_accuracy=True)
 
@@ -57,10 +58,10 @@ def generate_classifiers(training_folder,
         # create a binary recognizer per image
         # current complexity: O(n^2)
         # TODO: optimize this and integrate to TensorFlow
-        # recognizer.train(images, np.array([1 if label == cur_label else 0 for image, cur_label in zip(images, labels)]))
-        recognizer.train(images, np.array([
-            1 if label == cur_label else label_dict[label]
-            for cur_label in labels]))
+        recognizer.train(images, np.array([1 if label == cur_label else 0 for image, cur_label in zip(images, labels)]))
+        # recognizer.train(images, np.array([
+            # 1 if label == cur_label else label_dict[label]
+            # for cur_label in labels]))
 
         # Save classifier to text file
         file_name = label + '.xml'

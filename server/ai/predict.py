@@ -20,6 +20,6 @@ def match_classifier(classifer_file,
 
     # perform prediction and confidence
     label, confidence = recognizer.predict(image)
-    # label = True if label == 1 else False
+    label = True if label == 1 else False
 
     return label, confidence
