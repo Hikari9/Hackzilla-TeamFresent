@@ -36,6 +36,7 @@ def generate_classifiers(training_folder,
     # Get images and labels
     images, labels = get_images_and_labels(training_folder,
                                            cascader=cascader,
+                                           detect_faces=algorithm is ALGO_LOCAL_BINARY_PATTERNS,
                                            cascader_args=cascader_args,
                                            debug_accuracy=True)
 

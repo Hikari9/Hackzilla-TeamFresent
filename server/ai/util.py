@@ -4,7 +4,7 @@ import sys
 import numpy as np
 def load_grayscale_image(image_file,
                          equalize_hist=True,
-                         median_blur=False):
+                         median_blur=3):
 
     raw_image = cv2.imread(image_file)
     gray_image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2GRAY)
@@ -22,7 +22,6 @@ def load_grayscale_image(image_file,
 def get_images_and_labels(folder,
                           cascader=None,
                           cascader_args={},
-                          detect_faces=True,
                           debug=False,
                           debug_faces=False,
                           debug_accuracy=True,
@@ -50,7 +49,7 @@ def get_images_and_labels(folder,
                     image_path = os.path.join(path, filename)
                     image = load_grayscale_image(image_path, **kwargs)
 
-                    if detect_faces:
+                    if cascader is not None:
                         # get the face using Viola-Jones detector
                         faces = cascader.detectMultiScale(image, **cascader_args)
                         for (x, y, w, h) in faces:
