@@ -2,17 +2,31 @@ import cv2, cv2.face
 import os, os.path
 import sys
 import numpy as np
+def load_grayscale_image(image_file,
+                         equalize_hist=True,
+                         median_blur=False):
+
+    raw_image = cv2.imread(image_file)
+    gray_image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2GRAY)
+    image = gray_image
+
+    if equalize_hist:
+        test = cv2.equalizeHist(image)
+
+    if median_blur:
+        image = cv2.medianBlur(image, median_blur)
+
+    return image
 
 # function that gets images with respective labels from a given folder
 def get_images_and_labels(folder,
                           cascader=None,
                           cascader_args={},
                           detect_faces=True,
-                          median_blur=3,
-                          equalize_hist=True,
                           debug=False,
                           debug_faces=False,
-                          debug_accuracy=True):
+                          debug_accuracy=True,
+                          **kwargs):
 
     labels = []
     images = []
@@ -34,22 +48,7 @@ def get_images_and_labels(folder,
                 try:
 
                     image_path = os.path.join(path, filename)
-
-                    #image_pil = Image.open(image_path).convert('L')
-                    #image = np.array(image_pil, 'uint8')
-                    #cv2.equalizeHist(image, image)
-
-                    # get grayscale image
-                    # print(os.path.abspath(image_path))
-                    raw_image = cv2.imread(image_path)
-                    cv2.imshow("HI", raw_image)
-                    gray_image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2GRAY)
-                    image = gray_image
-
-                    if equalize_hist:
-                        image = cv2.equalizeHist(gray_image)
-                    if median_blur:
-                        image = cv2.medianBlur(image, median_blur)
+                    image = load_grayscale_image(image_path, **kwargs)
 
                     if detect_faces:
                         # get the face using Viola-Jones detector

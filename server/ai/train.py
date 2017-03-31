@@ -42,14 +42,24 @@ def generate_classifiers(training_folder,
     print('Collected %d images [%d labels]' % (len(images), len(set(labels))))
 
     FaceRecognizer = algorithm
-    for label in set(labels):
+
+    label_dict = {label: 0 for label in labels}
+    index = 2
+    for label in label_dict:
+        label_dict[label] = index
+        index += 1
+
+    for label in label_dict:
 
         recognizer = FaceRecognizer()
 
         # create a binary recognizer per image
         # current complexity: O(n^2)
         # TODO: optimize this and integrate to TensorFlow
-        recognizer.train(images, np.array([1 if label == cur_label else 0 for image, cur_label in zip(images, labels)]))
+        # recognizer.train(images, np.array([1 if label == cur_label else 0 for image, cur_label in zip(images, labels)]))
+        recognizer.train(images, np.array([
+            1 if label == cur_label else label_dict[label]
+            for cur_label in labels]))
 
         # Save classifier to text file
         file_name = label + '.xml'
