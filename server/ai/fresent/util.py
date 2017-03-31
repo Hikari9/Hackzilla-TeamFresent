@@ -21,15 +21,22 @@ def load_grayscale_image(image_file,
 
     return image
 
-VIOLA_JONES_DETECTOR_INSTANCE = None
+__VIOLA_JONES_CASCADER = None
 
 def viola_jones_detector(cascade_path=CASCADE_PATH):
-    global VIOLA_JONES_DETECTOR_INSTANCE
-    if VIOLA_JONES_DETECTOR_INSTANCE is None:
-        file_dir = os.path.dirname(os.path.abspath(__file__))
-        cascade_path = os.path.join(file_dir, '..', cascade_path)
-        VIOLA_JONES_DETECTOR_INSTANCE = cv2.CascadeClassifier(cascade_path)
-    return VIOLA_JONES_DETECTOR_INSTANCE
+    global __VIOLA_JONES_CASCADER
+
+    if __VIOLA_JONES_CASCADER is None:
+
+        # load detector instance dynamically
+        if not os.path.exists(cascade_path):
+            # try relative to the server/ai folder
+            file_dir = os.path.dirname(os.path.abspath(__file__))
+            cascade_path = os.path.join(file_dir, '..', cascade_path)
+ 
+        __VIOLA_JONES_CASCADER = cv2.CascadeClassifier(cascade_path)
+
+    return __VIOLA_JONES_CASCADER
 
 def detect_faces(image_file, scaleFactor=1.1, minNeighbors=2, **kwargs):
     image = load_grayscale_image(image_file)
