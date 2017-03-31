@@ -100,21 +100,7 @@ public class MainActivity extends BaseActivity {
         });
 
         // Fetching the Models
-        database().count(ClassEntity.class)
-                .get()
-                .consume(new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) {
-                        if(integer == 0) {
-                            fillMockData();
-                            for(ClassEntity ce: classModels) {
-                                database().insert(ce);
-                            }
-                        } else {
-                            fillClassModel();
-                        }
-                    }
-                });
+        fillMockData();
     }
 
     private void fillMockData() {
@@ -144,14 +130,6 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-    private ClassEntity createClass(String name, String courseCode, String section, String schoolYear, String schoolTerm) {
-        ClassEntity result = new ClassEntity();
-        result.setName(name);
-        result.setCourseCode(courseCode);
-        result.setSection(section);
-        result.setSchoolYear(schoolYear);
-        result.setSchoolTerm(schoolTerm);
-        return result;
     private void gotoAddClassEntityActivity(View v) {
         Toast.makeText(getApplicationContext(),
                 "FAB tapped", Toast.LENGTH_SHORT)
