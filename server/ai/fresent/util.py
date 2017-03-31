@@ -9,6 +9,9 @@ def load_grayscale_image(image_file,
                          equalize_hist=True,
                          median_blur=3):
 
+    if not isinstance(image_file, str):
+        return image_file
+
     raw_image = cv2.imread(image_file)
     gray_image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2GRAY)
     image = gray_image
@@ -39,6 +42,7 @@ def viola_jones_detector(cascade_path=CASCADE_PATH):
     return __VIOLA_JONES_CASCADER
 
 def detect_faces(image, scaleFactor=1.1, minNeighbors=2, **kwargs):
+    image = load_grayscale_image(image)
     return viola_jones_detector(**kwargs).detectMultiScale(image, **kwargs)
 
 # function that gets images with respective labels from a given folder
