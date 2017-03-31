@@ -1,5 +1,3 @@
-# perform training
-
 import cv2, cv2.face
 import os, os.path
 import sys
@@ -8,8 +6,15 @@ from util import get_images_and_labels
 
 # constants
 CASCADE_NAME = 'haarcascade_frontalface_default.xml'
+ALGO_LOCAL_BINARY_PATTERNS = cv2.face.createLBPHFaceRecognizer
+ALGO_EIGEN = cv2.face.createEigenFaceRecognizer
+ALGO_FISHER = cv2.face.createFisherFaceRecognizer
 
-def generate_classifiers(training_folder, classifier_folder, cascade_folder):
+# perform training and generate classifiers
+def generate_classifiers(training_folder,
+                         classifier_folder,
+                         cascade_folder,
+                         algorithm=ALGO_LOCAL_BINARY_PATTERNS):
 
     # Check if classifier folder exists
     if not os.path.exists(classifier_folder):
@@ -36,8 +41,10 @@ def generate_classifiers(training_folder, classifier_folder, cascade_folder):
 
     print('Collected %d images [%d labels]' % (len(images), len(set(labels))))
 
+    FaceRecognizer = algorithm
     for label in set(labels):
-        recognizer = cv2.face.createLBPHFaceRecognizer()
+
+        recognizer = FaceRecognizer()
 
         # create a binary recognizer per image
         # current complexity: O(n^2)
@@ -50,7 +57,6 @@ def generate_classifiers(training_folder, classifier_folder, cascade_folder):
 
         recognizer.save(file_path)
         print('Saved classifier ' + os.path.abspath(file_path))
-
 
 if __name__ == '__main__':
     args = sys.argv
