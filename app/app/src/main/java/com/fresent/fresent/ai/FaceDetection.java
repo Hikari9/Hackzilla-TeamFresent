@@ -29,7 +29,7 @@ public class FaceDetection extends ContextWrapper {
 
     public static final String CASCADE_CLASSIFIER = "haarcascade_frontalface_default.xml";
     private static final String TAG = "FACE_DETECTION";
-    private float relativeFaceSize = 0.2f; // tweak this
+    private float relativeFaceSize = 0.02f; // tweak this
     private int absoluteFaceSize = 0;
 
     public double getScaleFactor() {

@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.fresent.fresent.ai.FaceDetection;
 import com.fresent.fresent.base.BaseActivity;
@@ -54,7 +55,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == CameraActivity.RESULT_DENIED) {
                 // show snackbar that camera permission is required
@@ -74,13 +74,15 @@ public class MainActivity extends BaseActivity {
                 onReceiveImage(bitmap);
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // TODO: do face recognition stuff on receive image from camera activity
     protected void onReceiveImage(Bitmap bitmap) {
         // convert Bitmap to Mat for OpenCV
         Rect[] faces = faceDetection.detectFaces(bitmap);
-        Log.d(TAG, "Detected faces: " + faces.length);
+        Toast.makeText(this, "Detected faces: " + faces.length, Toast.LENGTH_LONG).show();
+//        Log.d(TAG, "Detected faces: " + faces.length);
         // show image in image view with region of interest
     }
 
