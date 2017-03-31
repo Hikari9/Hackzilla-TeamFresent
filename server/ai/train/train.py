@@ -6,9 +6,9 @@ import sys
 import numpy as np
 
 # constants
-CASCADE_PATH = '../data/haarcascade_frontalface_default.xml'
+CASCADE_NAME = 'haarcascade_frontalface_default.xml'
 
-def main(training_folder, classifier_folder):
+def generate_classifiers(training_folder, classifier_folder, cascade_folder):
 
     # Check if classifier folder exists
     if not os.path.exists(classifier_folder):
@@ -16,7 +16,8 @@ def main(training_folder, classifier_folder):
         os.makedirs(classifier_folder)
 
     # Viola-Jones classifier for Haar feature extraction
-    cascader = cv2.CascadeClassifier(CASCADE_PATH)
+    cascade_path = os.path.join(cascade_folder, CASCADE_NAME)
+    cascader = cv2.CascadeClassifier(cascade_path)
     assert(not cascader.empty())
 
     # Setup cascader args
@@ -87,7 +88,7 @@ def get_images_and_labels(folder,
                     #cv2.equalizeHist(image, image)
 
                     # get grayscale image
-                    print(os.path.abspath(image_path))
+                    # print(os.path.abspath(image_path))
                     raw_image = cv2.imread(image_path)
                     cv2.imshow("HI", raw_image)
                     gray_image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2GRAY)
@@ -136,6 +137,6 @@ def get_images_and_labels(folder,
 if __name__ == '__main__':
     args = sys.argv
     if len(args) < 3:
-        print('Usage: python %s <training_folder> <classifier_folder>' % args[0])
+        print('Usage: python %s <training_folder> <classifier_folder> [<cascade_folder>]' % args[0])
     else:
-        main(args[1], args[2])
+        generate_classifiers(args[1], args[2], '../data/' if len(args) == 3 else args[3])
