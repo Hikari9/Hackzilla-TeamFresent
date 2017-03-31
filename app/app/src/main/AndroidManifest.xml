@@ -31,5 +31,4 @@
         <activity android:name=".camera.CameraActivity">
         </activity>
     </application>
-    <suports-screens android:resu
 </manifest>
