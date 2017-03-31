@@ -3,7 +3,8 @@
     package="com.fresent.fresent">
 
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-feature android:name="android.hardware.wifi" android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
 
     <uses-feature

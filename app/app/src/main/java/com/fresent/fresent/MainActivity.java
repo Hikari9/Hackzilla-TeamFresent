@@ -19,21 +19,39 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
 import com.fresent.fresent.camera.CameraActivity;
 import com.fresent.fresent.classes.AddClassActivity;
 import com.fresent.fresent.classes.ClassListAdapter;
+import com.fresent.fresent.models.AttendanceCheck;
+import com.fresent.fresent.models.AttendanceCheckEntity;
 import com.fresent.fresent.models.ClassEntity;
+import com.fresent.fresent.models.StudentEnrollment;
+import com.fresent.fresent.models.StudentEnrollmentEntity;
 import com.fresent.fresent.models.StudentEntity;
 import com.fresent.fresent.student_attendance.FresentActivity;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.requery.query.Condition;
+import io.requery.query.Operator;
 import io.requery.util.function.Consumer;
 
 @BindContentView(R.layout.activity_main)
@@ -48,6 +66,9 @@ public class MainActivity extends BaseActivity {
 
     private List<ClassEntity> classModels;
     private ListView classListView;
+
+    private RequestQueue reqQueue;
+    private Gson gson;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -92,6 +113,10 @@ public class MainActivity extends BaseActivity {
 
         // Fetching the Models
         fillClassModel();
+
+        // Networking Instantiation
+        this.reqQueue = Volley.newRequestQueue( getApplicationContext() );
+        this.gson = new Gson();
     }
 
     private ClassEntity createClass(String name, String courseCode, String section, String schoolYear, String schoolTerm) {
@@ -188,11 +213,6 @@ public class MainActivity extends BaseActivity {
 
                 fetchStudentData( newModel, qrUrl );
 
-                String className = newModel.getCourseCode() + " - " + newModel.getSection();
-                Toast.makeText(getApplicationContext(),
-                        "'" + className + "' successfully added", Toast.LENGTH_SHORT)
-                        .show();
-                onReceiveClassEntity( newModel );
             } else {
                 Toast.makeText(getApplicationContext(),
                         "anyare be?", Toast.LENGTH_SHORT)
@@ -215,8 +235,73 @@ public class MainActivity extends BaseActivity {
         this.listAdapter.notifyDataSetChanged();
     }
 
-    private void fetchStudentData(ClassEntity model, String url) {
-        // TODO
+    static class TempStudent {
+        String classifier_url;
+        String first_name;
+        int id;
+        String id_picture;
+        String last_name;
+        String middle_name;
+    }
+
+    static class TempClass {
+        String id;
+        String name;
+        List<TempStudent> students;
+    }
+
+    private void fetchStudentData(final ClassEntity model, String url) {
+        url = "http://10.239.119.166:5000/classroom/1";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        ArrayList<StudentEntity> students = processStudentJSON( response );
+                        for(StudentEntity student: students) {
+                            StudentEnrollmentEntity see = new StudentEnrollmentEntity();
+                            see.setClassEntity( model );
+                            see.setStudent( student );
+                            database().upsert( see );
+                        }
+
+                        String className = model.getCourseCode() + " - " + model.getSection();
+                        MainActivity.this.classModels.clear();
+                        MainActivity.this.fillClassModel();
+                        onReceiveClassEntity( model );
+                        Toast.makeText(getApplicationContext(),
+                                "'" + className + "' successfully added", Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(),
+                                "Failed on fetching data: " + error.getMessage(), Toast.LENGTH_LONG)
+                                .show();
+                    }
+                }
+        );
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5*1000, 3, 1.0f));
+        this.reqQueue.add( stringRequest );
+    }
+    private ArrayList<StudentEntity> processStudentJSON( String json ) {
+
+        TempClass temp = gson.fromJson(json, TempClass.class);
+        ArrayList<StudentEntity> students = new ArrayList<StudentEntity>();
+        for(TempStudent ts: temp.students) {
+            StudentEntity se = new StudentEntity();
+            se.setIdNumber(Integer.toString(ts.id));
+            se.setFirstName(ts.first_name);
+            se.setLastName(ts.last_name);
+            se.setMiddleName(ts.middle_name);
+            se.setIdPicture(ts.id_picture);
+            database().upsert(se);
+            students.add(se);
+        }
+
+        return students;
     }
 
     /**
