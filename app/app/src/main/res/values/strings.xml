@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Fresent</string>
     <string name="action_settings">Settings</string>
+
+    <string name="class_name_label">Name:</string>
+    <string name="class_code_label">Code:</string>
+    <string name="class_section_label">Section:</string>
+    <string name="class_schoolterm_label">Term:</string>
+    <string name="class_schoolyear_label">SY:</string>
+
+    <string name="class_sourceurl_label">QR:</string>
 </resources>
