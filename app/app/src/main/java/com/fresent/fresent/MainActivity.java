@@ -13,14 +13,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
 import com.fresent.fresent.camera.CameraActivity;
+import com.fresent.fresent.models.StudentEntity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.requery.util.function.Consumer;
 
 @BindContentView(R.layout.activity_main)
 @BindToolbar(R.id.toolbar)
@@ -38,8 +41,21 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
+        final TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
+
+        // test database query: "SELECT COUNT(*) FROM student"
+        database()
+            .count(StudentEntity.class)
+            .get()
+            .consume(new Consumer<Integer>() {
+            @Override
+            public void accept(Integer integer) {
+                Toast.makeText(getApplicationContext(),
+                    String.valueOf(integer) + " students in database", Toast.LENGTH_LONG)
+                    .show();
+            }
+        });
     }
 
     @OnClick(R.id.fab)
