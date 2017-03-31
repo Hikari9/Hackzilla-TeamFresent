@@ -2,7 +2,7 @@ import cv2, cv2.face
 import os, os.path
 import sys
 import numpy as np
-from util import get_images_and_labels
+from .util import get_images_and_labels
 
 # constants
 CASCADE_NAME = 'haarcascade_frontalface_default.xml'
@@ -13,7 +13,7 @@ ALGO_FISHER = cv2.face.createFisherFaceRecognizer
 # perform training and generate classifiers
 def generate_classifiers(training_folder,
                          classifier_folder,
-                         cascade_folder,
+                         cascade_folder=None,
                          algorithm=ALGO_LOCAL_BINARY_PATTERNS):
 
     # Check if classifier folder exists
