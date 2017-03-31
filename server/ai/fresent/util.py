@@ -33,13 +33,12 @@ def viola_jones_detector(cascade_path=CASCADE_PATH):
             # try relative to the server/ai folder
             file_dir = os.path.dirname(os.path.abspath(__file__))
             cascade_path = os.path.join(file_dir, '..', cascade_path)
- 
+
         __VIOLA_JONES_CASCADER = cv2.CascadeClassifier(cascade_path)
 
     return __VIOLA_JONES_CASCADER
 
-def detect_faces(image_file, scaleFactor=1.1, minNeighbors=2, **kwargs):
-    image = load_grayscale_image(image_file)
+def detect_faces(image, scaleFactor=1.1, minNeighbors=2, **kwargs):
     return viola_jones_detector(**kwargs).detectMultiScale(image, **kwargs)
 
 # function that gets images with respective labels from a given folder
