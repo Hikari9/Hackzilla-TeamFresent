@@ -25,7 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FaceDetection extends ContextWrapper {
+public class FaceDetection extends CvContextWrapper {
 
     public static final String CASCADE_CLASSIFIER = "haarcascade_frontalface_default.xml";
     private static final String TAG = "FACE_DETECTION";
@@ -68,7 +68,6 @@ public class FaceDetection extends ContextWrapper {
 
     public FaceDetection(Context context) {
         super(context);
-        loadClassifier();
     }
 
     public float getRelativeFaceSize() {
@@ -89,16 +88,6 @@ public class FaceDetection extends ContextWrapper {
 
     public void setAbsoluteFaceSize(int absoluteFaceSize) {
         this.absoluteFaceSize = absoluteFaceSize;
-    }
-
-    public void loadClassifier() {
-        if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, loaderCallback);
-        } else {
-            Log.d(TAG, "OpenCV library found inside package. Using it.");
-            loaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        }
     }
 
     public Mat convertBitmapToMat(Bitmap image) {
@@ -134,55 +123,19 @@ public class FaceDetection extends ContextWrapper {
         return faces.toArray();
     }
 
-
-    // async loader of opencv resources
-    private BaseLoaderCallback loaderCallback = new BaseLoaderCallback(this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS: {
-                    Log.i(TAG, "OpenCV loaded successfully");
-                    try {
-                        // load cascade file from application resources
-
-                        // load classifier
-                        InputStream is = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
-                        File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        File classifierFile = new File(cascadeDir, CASCADE_CLASSIFIER);
-                        FileOutputStream os = new FileOutputStream(classifierFile);
-
-                        byte[] buffer = new byte[4096];
-                        int bytesRead;
-                        while ((bytesRead = is.read(buffer)) != -1) {
-                            os.write(buffer, 0, bytesRead);
-                        }
-                        is.close();
-                        os.close();
-
-                        String absolutePath = classifierFile.getAbsolutePath();
-                        violaJonesClassifier = new CascadeClassifier(absolutePath);
-                        violaJonesClassifier.load(absolutePath); // need to reload because empty bug
-                        if (violaJonesClassifier.empty()) {
-                            Log.e(TAG, "Failed to load cascade classifier");
-                            violaJonesClassifier = null;
-                        } else
-                            Log.i(TAG, "Loaded cascade classifier from " + classifierFile.getAbsolutePath());
-
-                        cascadeDir.delete();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e(TAG, "Failed to load cascade. Exception thrown: " + e);
-                    }
-                    break;
-                }
-                default: {
-                    super.onManagerConnected(status);
-                    break;
-                }
-            }
-        }
-    };
+    protected void onLoad() {
+        File classifierFile = this.loadRawResource(R.raw.haarcascade_frontalface_default,
+                                                   "haarcascade_frontalface_default.xml");
+        String absolutePath = classifierFile.getAbsolutePath();
+        violaJonesClassifier = new CascadeClassifier(absolutePath);
+        violaJonesClassifier.load(absolutePath); // need to reload because empty bug
+        if (violaJonesClassifier.empty()) {
+            Log.e(TAG, "Failed to load cascade classifier");
+            violaJonesClassifier = null;
+        } else
+            Log.i(TAG, "Loaded cascade classifier from " + classifierFile.getAbsolutePath());
+        cleanUpResources();
+    }
 
 
 }

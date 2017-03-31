@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (faceDetection.getViolaJonesClassifier() == null)
-            faceDetection.loadClassifier();
+            faceDetection.loadOpenCV();
     }
 
     @OnClick(R.id.fab)
