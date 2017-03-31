@@ -1,6 +1,7 @@
 package com.fresent.fresent;
 
 import android.os.Bundle;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,10 +11,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.fresent.fresent.base.BaseActivity;
+import com.fresent.fresent.base.BindContentView;
+import com.fresent.fresent.base.BindToolbar;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+@BindContentView(R.layout.activity_main)
+@BindToolbar(R.id.toolbar)
+public class MainActivity extends BaseActivity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -23,10 +30,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
