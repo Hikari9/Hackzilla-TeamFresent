@@ -20,6 +20,8 @@ import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
 import com.fresent.fresent.camera.CameraActivity;
 
+import org.opencv.core.Rect;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -42,11 +44,6 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         if (faceDetection.getViolaJonesClassifier() == null)
             faceDetection.loadClassifier();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @OnClick(R.id.fab)
@@ -82,8 +79,9 @@ public class MainActivity extends BaseActivity {
     // TODO: do face recognition stuff on receive image from camera activity
     protected void onReceiveImage(Bitmap bitmap) {
         // convert Bitmap to Mat for OpenCV
-        Snackbar.make(getWindow().getDecorView(), "TODO: face detection", Snackbar.LENGTH_LONG)
-            .show();
+        Rect[] faces = faceDetection.detectFaces(bitmap);
+        Log.d(TAG, "Detected faces: " + faces.length);
+        // show image in image view with region of interest
     }
 
     /**

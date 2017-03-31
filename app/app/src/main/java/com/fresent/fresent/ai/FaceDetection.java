@@ -159,7 +159,9 @@ public class FaceDetection extends ContextWrapper {
                         is.close();
                         os.close();
 
-                        violaJonesClassifier = new CascadeClassifier(classifierFile.getAbsolutePath());
+                        String absolutePath = classifierFile.getAbsolutePath();
+                        violaJonesClassifier = new CascadeClassifier(absolutePath);
+                        violaJonesClassifier.load(absolutePath); // need to reload because empty bug
                         if (violaJonesClassifier.empty()) {
                             Log.e(TAG, "Failed to load cascade classifier");
                             violaJonesClassifier = null;
