@@ -13,8 +13,11 @@ import android.widget.Toast;
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
+import com.fresent.fresent.classes.AddClassActivity;
 import com.fresent.fresent.classes.MainClassListAdapter;
+import com.fresent.fresent.drawer.DrawerFactory;
 import com.fresent.fresent.models.ClassEntity;
+import com.fresent.fresent.student_attendance.FresentActivity;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
@@ -112,7 +115,7 @@ public class MainActivity extends BaseActivity {
             }
             */
             case R.id.nav_students: {
-                Intent intent = new Intent(this, StudentListActivity.class);
+                Intent intent = new Intent(this, FresentActivity.class);
                 startActivity(intent);
                 break;
             }
