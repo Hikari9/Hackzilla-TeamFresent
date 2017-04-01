@@ -2,7 +2,6 @@ import os, uuid
 from app import app, db
 from config import FILE_UPLOAD_FOLDER, IMAGE_UPLOAD_FOLDER, CLASSIFIER_UPLOAD_FOLDER
 from flask import request, jsonify, send_file, send_from_directory
-from werkzeug.utils import secure_filename
 from .models import Student, Classroom
 
 @app.route( "/classroom/<classroom_id>", methods = ["GET"] )
@@ -17,9 +16,9 @@ def get_class( classroom_id ):
 @app.route( "/classifier/<student_id>", methods = ["GET"] )
 def get_classifier( student_id ):		#TO DO
 	student_query = Student.query.filter_by( id = student_id )
-	if student_query.count() > 0:
+	'''if student_query.count() > 0:
 		student = student_query.first()
-		return send_file( os.path.join( CLASSIFIER_UPLOAD_FOLDER, str( student.id ) + ".xml" ) )
+		return send_file( os.path.join( CLASSIFIER_UPLOAD_FOLDER, str( student.id ) + ".xml" ) )'''
 	return jsonify( {} )
 
 @app.route( "/send_nudes", methods = ["POST"] )
@@ -27,11 +26,15 @@ def post_nudes():
 	student_id = request.form["student_id"]
 	file = request.form["file"]
 	
-	target = open( os.path.join( IMAGE_UPLOAD_FOLDER, student_id + "/" + str( uuid.uuid4() ) + ".jpg" ), "w" )
+	filename = str( uuid.uuid4() + ".jpg"
+	
+	target = open( os.path.join( IMAGE_UPLOAD_FOLDER, student_id + "/" + filename, "w" )
 	target.truncate()
 	
 	target.write( file )
 	target.close()
+	
+	
 	
 	return student_id + " uploaded an image."
 
@@ -61,7 +64,9 @@ def add_student():
 	db.session.add( s )
 	db.session.commit()
 	
-	os.makedirs( os.path.join( IMAGE_UPLOAD_FOLDER, id + "/" ) )
+	new_path = os.path.join( IMAGE_UPLOAD_FOLDER, id + "/" )
+	if not os.path.exists( new_path ):
+		os.makedirs( new_path )
 	
 	return jsonify( { "id": id, "first_name": first_name, "middle_name": middle_name, "last_name": last_name } )
 

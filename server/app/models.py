@@ -1,4 +1,7 @@
+import os
 from app import db
+from config import FILE_UPLOAD_FOLDER, IMAGE_UPLOAD_FOLDER, CLASSIFIER_UPLOAD_FOLDER
+from flask import send_file
 
 student_enrollment = db.Table( "student_enrollment", db.Column( "student_id", db.Integer, db.ForeignKey( "student.id" ) ), db.Column( "classroom_id", db.Integer, db.ForeignKey( "classroom.id" ) ) )
 
@@ -50,8 +53,9 @@ class Classroom( db.Model ):
 	def get_students( self ):
 		students = []
 		for student in self.students:
-			student_picture = None	# TO DO
-			classifier_url = None	# TO DO
+			#student_picture = send_file( os.path.join( IMAGE_UPLOAD_FOLDER, str(student.id ) + "/1.jpg" ) )
+			student_picture = None
+			classifier_url = None
 			students.append( { "id": student.id, "first_name": student.first_name, "middle_name": student.middle_name, "last_name": student.last_name, "id_picture": student_picture, "classifier_url": classifier_url } )
 		return students
 	
