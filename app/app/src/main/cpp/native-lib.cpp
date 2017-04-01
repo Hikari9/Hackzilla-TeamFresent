@@ -1,6 +1,6 @@
 #include <jni.h>
 #include "opencv2/core/core.hpp"
-#include "opencv2"
+#include "opencv2/face.hpp"
 
 using namespace cv;
 

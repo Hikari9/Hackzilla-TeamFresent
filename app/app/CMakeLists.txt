@@ -17,7 +17,8 @@ add_library( native-lib SHARED src/main/cpp/native-lib.cpp )
 add_library( lib_opencv SHARED IMPORTED )
 
 #Addition suggested by Bruno Alexandre Krinski 20160825
-set_target_properties(lib_opencv PROPERTIES IMPORTED_LOCATION /homoe/rico/Git/Fresent/app/app/src/main/jniLibs/${ANDROID_ABI}/libopencv_java3.so)
+set_target_properties(lib_opencv PROPERTIES IMPORTED_LOCATION /home/rico/Git/Fresent/app/app/src/main/jniLibs/${ANDROID_ABI}/libopencv_java320.so)
+set_target_properties(opencv_face PROPERTIES IMPORTED LOCATION /home/rico/Git/Fresent/app/app/src/main/jniLibs/${ANDROID_ABI}/libopencv_face.so)
 
 #Added by IDE on project create
 find_library( log-lib log )
