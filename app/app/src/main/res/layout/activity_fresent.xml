@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/coordinator_layout">
 
-    <ImageView
-        android:id="@+id/jumbotron"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_weight="1"
-        app:srcCompat="@mipmap/ic_launcher" />
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/studentList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/jumbotron"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_weight="1"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <ListView
+            android:id="@+id/studentList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
         android:layout_weight="1" />
-</LinearLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

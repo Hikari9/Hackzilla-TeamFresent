@@ -1,6 +1,7 @@
 package com.fresent.fresent;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.fresent.fresent.ai.FaceDetection;
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
@@ -20,6 +22,8 @@ import com.fresent.fresent.models.ClassEntity;
 import com.fresent.fresent.student_attendance.FresentActivity;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import org.opencv.core.Rect;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,11 +36,8 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MAIN";
     private static final int REQUEST_ADD_CLASS = 1;
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+    private static final int REQUEST_CAMERA = 1;
+    FaceDetection faceDetection;
 
     @BindView(R.id.main_class_list)
     RecyclerView recyclerView;
@@ -59,6 +60,7 @@ public class MainActivity extends BaseActivity {
                 break;
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -76,6 +78,22 @@ public class MainActivity extends BaseActivity {
         adapter = new MainClassListAdapter();
         recyclerView.setAdapter(adapter);
         refreshData();
+        faceDetection = new FaceDetection(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (faceDetection.getViolaJonesClassifier() == null)
+            faceDetection.loadOpenCV();
+        refreshData();
+        if (recyclerView.getChildCount() == 0) {
+            noClassesView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            noClassesView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void refreshData() {
@@ -90,19 +108,6 @@ public class MainActivity extends BaseActivity {
                     Log.d(TAG, "Accepting: " + classEntity);
                 }
             });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        refreshData();
-        if (recyclerView.getChildCount() == 0) {
-            noClassesView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            noClassesView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-        }
     }
 
     protected boolean onDrawerItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -124,9 +129,15 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
-    @OnClick({R.id.fab, R.id.button_add_class})
+    @OnClick(R.id.button_add_class)
     protected void onAddClass(View v) {
         Intent intent = new Intent(this, AddClassActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.fab)
+    protected void onClickFab(View v) {
+        Intent intent = new Intent(this, FresentActivity.class);
         startActivity(intent);
     }
 
@@ -150,6 +161,14 @@ public class MainActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    // TODO: do face recognition stuff on receive image from camera activity
+    protected void onReceiveImage(Bitmap bitmap) {
+        // convert Bitmap to Mat for OpenCV
+        Rect[] faces = faceDetection.detectFaces(bitmap);
+        Toast.makeText(this, "Detected faces: " + faces.length, Toast.LENGTH_LONG).show();
     }
 
 }

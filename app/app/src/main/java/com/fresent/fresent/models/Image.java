@@ -16,16 +16,15 @@ import io.requery.Table;
 public interface Image extends Parcelable, Persistable {
 
     @Key
-    @Generated
     @Column(name = "id")
     int getId();
 
-    @ForeignKey(referencedColumn = "id")
+    @ForeignKey(referencedColumn = "id", references = Session.class)
     @Column(name = "session_id")
     @ManyToOne
     Session getSession();
 
-    @ForeignKey(referencedColumn = "id")
+    @ForeignKey(referencedColumn = "id", references = AttendanceCheck.class)
     @Column(name = "attendance_check_id")
     @ManyToOne
     AttendanceCheck getAttandanceCheck();

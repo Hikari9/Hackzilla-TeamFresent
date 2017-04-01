@@ -67,13 +67,10 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA) {
-            if (resultCode == RESULT_OK) {
-                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                // TODO: do more stuff like save bitmap to file
-            }
             setResult(resultCode, data);
             finish();
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 

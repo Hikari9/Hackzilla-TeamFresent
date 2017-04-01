@@ -1,62 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.fresent.fresent.classes.AddClassActivity">
-    <include layout="@layout/class_detail_form_view"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp"
-        android:id="@+id/include" />
-
-    <TextView
-        android:id="@+id/classQRLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="@string/class_sourceurl_label"
-        android:textSize="14sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/classQREditText"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <EditText
-        android:id="@+id/classQREditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="0dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
 
     <Button
         android:id="@+id/qrScan"
-        style="@style/Widget.AppCompat.Button"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:text="Tap to Scan QR Code"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:padding="24dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="84dp"
+        android:text="Scan QR Code to add new class"
+        android:background="?android:attr/colorPrimary"
+        android:backgroundTint="@color/accent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/classQREditText" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
-    <Button
-        android:id="@+id/addNewClass"
-        style="@style/Base.Widget.AppCompat.Button.Colored"
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:text="Add New Class"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:background="@color/primary"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            tools:layout_editor_absoluteY="0dp"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+
 
 </android.support.constraint.ConstraintLayout>

@@ -22,11 +22,11 @@ public interface StudentEnrollment extends Parcelable, Persistable {
     @Column(name = "id")
     int getId();
 
-    @ForeignKey(referencedColumn = "id_number")
+    @ForeignKey(referencedColumn = "id_number", references = Student.class)
     @ManyToOne
     Student getStudent();
 
-    @ForeignKey(referencedColumn = "id")
+    @ForeignKey(referencedColumn = "id", references = Class.class)
     @ManyToOne
     Class getClassEntity();
 

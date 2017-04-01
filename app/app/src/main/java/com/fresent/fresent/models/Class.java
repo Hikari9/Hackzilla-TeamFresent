@@ -16,7 +16,6 @@ import io.requery.query.Result;
 public interface Class extends Parcelable, Persistable {
 
     @Key
-    @Generated
     @Column(name = "id")
     int getId();
 
