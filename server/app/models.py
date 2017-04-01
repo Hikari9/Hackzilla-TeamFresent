@@ -24,6 +24,9 @@ class Student( db.Model ):
 	def is_enrolled( self, classroom ):
 		return self.classrooms.filter( student_enrollment.c.classroom_id == classroom.id ).count() > 0
 	
+	def get_student( self ):
+		return { "id": self.id, "first_name": self.first_name, "middle_name": self.middle_name, "last_name": self.last_name }
+	
 	def __repr__( self ):
 		return "<Student %r %s, %s %s>" % ( self.id, self.last_name, self.first_name, self.middle_name )
 
@@ -49,6 +52,12 @@ class Classroom( db.Model ):
 	
 	def is_enrolled( self, student ):
 		return self.students/filter( student_enrollment.c.student_id == student.id ).count() > 0
+	
+	def get_class( self ):
+		return { "id": self.id, "name": self.name, "students": self.get_students() }
+	
+	def get_classroom( self ):
+		return { "id": self.id, "name": self.name, "course_code" : self.course_code, "section": self.section, "school_year": self.school_year, "school_term": self.school_term }
 	
 	def get_students( self ):
 		students = []
