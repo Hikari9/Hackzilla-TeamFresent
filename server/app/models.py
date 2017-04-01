@@ -54,7 +54,7 @@ class Classroom( db.Model ):
 		return self.students/filter( student_enrollment.c.student_id == student.id ).count() > 0
 	
 	def get_class( self ):
-		return { "id": self.id, "name": self.name, "students": self.get_students() }
+		return { "id": self.id, "name": self.name, "course_code": self.course_code, "section": self.section, "school_year": self.school_year, "school_term": self.school_term, "students": self.get_students() }
 	
 	def get_classroom( self ):
 		return { "id": self.id, "name": self.name, "course_code" : self.course_code, "section": self.section, "school_year": self.school_year, "school_term": self.school_term }
