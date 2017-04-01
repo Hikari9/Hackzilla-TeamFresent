@@ -124,9 +124,15 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
-    @OnClick({R.id.fab, R.id.button_add_class})
+    @OnClick(R.id.button_add_class)
     protected void onAddClass(View v) {
         Intent intent = new Intent(this, AddClassActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.fab)
+    protected void onClickFab(View v) {
+        Intent intent = new Intent(this, FresentActivity.class);
         startActivity(intent);
     }
 

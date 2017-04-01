@@ -11,9 +11,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fresent.fresent.R;
-import com.fresent.fresent.classes.ClassListAdapter;
-import com.fresent.fresent.models.Class;
-import com.fresent.fresent.models.ClassEntity;
 import com.fresent.fresent.models.StudentEntity;
 
 import java.util.List;
@@ -23,20 +20,14 @@ import java.util.List;
  */
 
 public class StudentListAdapter extends ArrayAdapter<StudentEntity> {
+    private static final int LAYOUT = R.layout.student_list_item;
     private Context mContext;
     private List<StudentEntity> models;
-    private static final int LAYOUT = R.layout.student_list_item;
 
     public StudentListAdapter(@NonNull Context context, @NonNull List<StudentEntity> objects) {
         super(context, LAYOUT, objects);
         this.mContext = context;
         this.models = objects;
-    }
-
-    private class ViewHolder {
-        ImageView studentThumbnail;
-        TextView studentName;
-        Spinner attendanceStatus;
     }
 
     @Override
@@ -45,26 +36,32 @@ public class StudentListAdapter extends ArrayAdapter<StudentEntity> {
         ViewHolder viewHolder;
 
         final View result;
-        if( convertView == null ) {
+        if (convertView == null) {
             viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from( getContext() );
-            convertView = inflater.inflate( LAYOUT, parent, false );
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(LAYOUT, parent, false);
             viewHolder.studentThumbnail =
-                    (ImageView) convertView.findViewById( R.id.studentThumbnail );
+                (ImageView) convertView.findViewById(R.id.studentThumbnail);
             viewHolder.studentName =
-                    (TextView) convertView.findViewById( R.id.studentCountTextView );
+                (TextView) convertView.findViewById(R.id.studentCountTextView);
             viewHolder.attendanceStatus =
-                    (Spinner) convertView.findViewById( R.id.statusSpinner );
+                (Spinner) convertView.findViewById(R.id.statusSpinner);
             result = convertView;
-            convertView.setTag( viewHolder );
+            convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             result = convertView;
         }
 
         String name = model.getFirstName() + " " + model.getLastName();
-        viewHolder.studentName.setText( name );
+        viewHolder.studentName.setText(name);
 
         return convertView;
+    }
+
+    private class ViewHolder {
+        ImageView studentThumbnail;
+        TextView studentName;
+        Spinner attendanceStatus;
     }
 }
