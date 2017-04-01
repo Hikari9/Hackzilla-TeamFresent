@@ -23,11 +23,10 @@ public interface Session extends Parcelable, Persistable {
     String OK = "OK";
 
     @Key
-    @Generated
     @Column(name = "id")
     int getId();
 
-    @ForeignKey(referencedColumn = "id")
+    @ForeignKey(referencedColumn = "id", references = Class.class)
     @Column(name = "class_id")
     @ManyToOne
     Class getClassEntity();

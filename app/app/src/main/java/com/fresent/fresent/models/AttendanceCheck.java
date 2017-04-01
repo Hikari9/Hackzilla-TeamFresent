@@ -20,16 +20,15 @@ public interface AttendanceCheck extends Parcelable, Persistable {
     String UNCONFIRMED = "UNCONFIRMED";
 
     @Key
-    @Generated
     @Column(name = "id")
     int getId();
 
-    @ForeignKey(referencedColumn = "id")
+    @ForeignKey(referencedColumn = "id", references = StudentEnrollment.class)
     @Column(name = "student_enrollment_id")
     @ManyToOne
     StudentEnrollment getStudentEnrollment();
 
-    @ForeignKey(referencedColumn = "id")
+    @ForeignKey(referencedColumn = "id", references = Session.class)
     @Column(name = "session_id")
     @ManyToOne
     Session getSession();
