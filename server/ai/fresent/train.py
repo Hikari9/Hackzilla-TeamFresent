@@ -36,6 +36,7 @@ def generate_classifiers(training_folder,
         for label, id in label_dict.items():
             recognizer.setLabelInfo(id, label)
 
+        print(classifier_path)
         if not os.path.exists(os.path.dirname(classifier_path)):
             os.makedirs(os.path.dirname(classifier_path))
 
