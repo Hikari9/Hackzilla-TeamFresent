@@ -3,7 +3,7 @@ from app import db
 student_enrollment = db.Table( "student_enrollment", db.Column( "student_id", db.Integer, db.ForeignKey( "student.id" ) ), db.Column( "classroom_id", db.Integer, db.ForeignKey( "classroom.id" ) ) )
 
 class Student( db.Model ):
-	id = db.Column( db.Integer, primary_key = True )
+	id = db.Column( db.String( 10 ), primary_key = True )
 	first_name = db.Column( db.String( 50 ) )
 	middle_name = db.Column( db.String( 20 ) )
 	last_name = db.Column( db.String( 20 ) )

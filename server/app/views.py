@@ -1,11 +1,11 @@
 import os, uuid
 from app import app, db
-from flask import request, jsonify
+from flask import request, jsonify, send_file, send_from_directory
 from werkzeug.utils import secure_filename
 from .models import Student, Classroom
 
 @app.route( "/classroom/<classroom_id>", methods = ["GET"] )
-def get_classroom( classroom_id ):
+def get_class( classroom_id ):
 	classroom_query = Classroom.query.filter_by( id = classroom_id )
 	if classroom_query.count() > 0:
 		name = classroom_query.first().name
@@ -18,7 +18,8 @@ def get_classifier( student_id ):		#TO DO
 	student_query = Student.query.filter_by( id = student_id )
 	if student_query.count() > 0:
 		student = student_query.first()
-		return student.id + " " + student.first_name
+		return send_file( os.path.join( app.config["CLASSIFIER_UPLOAD_FOLDER"], student.id + ".xml" ) )
+		#return student.id + " " + student.first_name
 	return jsonify( {} )
 
 @app.route( "/send_nudes", methods = ["POST"] )
@@ -34,6 +35,8 @@ def post_nudes():
 	
 	return student_id + " uploaded an image."
 
+''' TEMPORARY ROUTES '''
+
 @app.route( "/tmp/add_classroom", methods = ["POST"] )
 def add_classroom():
 	name = request.form["name"]
@@ -45,7 +48,7 @@ def add_classroom():
 	c = Classroom( name = name, course_code = course_code, section = section, school_year = school_year, school_term = school_term )
 	db.session.add( c )
 	db.session.commit()
-	return c.course_code + " " + c.name
+	return jsonify( { "name": name, "course_code": course_code, "section": section, "school_year": school_year, "school_term": school_term } )
 
 @app.route( "/tmp/add_student", methods = ["POST"] )
 def add_student():
@@ -60,7 +63,7 @@ def add_student():
 	
 	os.makedirs( os.path.join( app.config["IMAGE_UPLOAD_FOLDER"], id + "/" ) )
 	
-	return s.first_name
+	return jsonify( { "id": id, "first_name": first_name, "middle_name": middle_name, "last_name": last_name } )
 
 @app.route( "/tmp/enroll", methods = ["POST"] )
 def enroll():
@@ -90,3 +93,33 @@ def delete_all():
 		db.session.delete( c )
 	db.session.commit()
 	return "DELETED EVERYTHAAAANG~!"
+
+@app.route( "/tmp/get_student/<id>", methods = ["GET"] )
+def get_student( id ):
+	student_query = Student.query.filter_by( id = id )
+	if student_query.count() > 0:
+		student = student_query.first()
+		return jsonify( { "id": student.id, "first_name": student.first_name, "middle_name": student.middle_name, "last_name": student.last_name } )
+
+@app.route( "/tmp/get_classrom/<id>", methods = ["GET"] )
+def get_classroom( id ):
+	classroom_query = Classroom.query.filter_by( id = id )
+	if classroom_query.count() > 0:
+		classroom = classroom_query.first()
+		return jsonify( { "id": classroom.id, "name": classroom.name, "course_code": classroom.course_code, "section": classroom.section, "school_year": classroom.school_year, "school_term": classroom.school_term } )
+
+@app.route( "/tmp/get_all_students", methods = ["POST", "GET"] )
+def get_all_students():
+	students = []
+	student_query = Student.query.all()
+	for s in student_query:
+		students.append( { "id": s.id, "first_name": s.first_name, "middle_name": s.middle_name, "last_name": s.last_name } )
+	return jsonify( students )
+
+@app.route( "/tmp/get_all_classrooms", methods = ["POST", "GET"] )
+def get_all_classrooms():
+	classrooms = []
+	classroom_query = Classroom.query.all()
+	for c in classroom_query:
+		classrooms.append( { "id": c.id, "name": c.name, "course_code": c.course_code, "section": c.section, "school_year": c.school_year, "school_term": c.school_term } )
+	return jsonify( classrooms )
