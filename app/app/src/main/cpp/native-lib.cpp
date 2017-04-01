@@ -1,6 +1,8 @@
 #include <jni.h>
-#include <string>
-#include <iostream>
+#include "opencv2/core/core.hpp"
+#include "opencv2"
+
+using namespace cv;
 
 /* NAMESPACE TEMPLATE */
 
@@ -35,6 +37,7 @@ namespace face_recognition {
      * @param image
      */
     bool match_classifier(const char *file, const char *image) {
+        Ptr<FaceRecognizer> recognizer;
         return false;
     }
 }
