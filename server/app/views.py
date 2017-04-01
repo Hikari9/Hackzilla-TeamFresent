@@ -12,15 +12,15 @@ def get_class( classroom_id ):
 		students = classroom_query.first().get_students()
 		return jsonify( { "id": classroom_id, "name": name, "students": students } )
 	return jsonify( {} )
-
+'''
 @app.route( "/classifier/<student_id>", methods = ["GET"] )
 def get_classifier( student_id ):		#TO DO
 	student_query = Student.query.filter_by( id = student_id )
-	'''if student_query.count() > 0:
+	if student_query.count() > 0:
 		student = student_query.first()
-		return send_file( os.path.join( CLASSIFIER_UPLOAD_FOLDER, str( student.id ) + ".xml" ) )'''
+		return send_file( os.path.join( CLASSIFIER_UPLOAD_FOLDER, str( student.id ) + ".xml" ) )
 	return jsonify( {} )
-
+'''
 @app.route( "/send_class_photo", methods = ["POST"] )
 def post_photo():
 	classroom_id = request.form["classroom_id"]
@@ -35,7 +35,7 @@ def post_photo():
 	# run face detection and recognition, will return object stuff to jsonify
 	
 	return str( classroom_id ) + " uploaded an image."
-
+'''
 @app.route( "/send_nudes", methods = ["POST"] )
 def post_nudes():
 	student_id = request.form["student_id"]
@@ -50,7 +50,7 @@ def post_nudes():
 	target.close()	
 	
 	return student_id + " uploaded an image."
-
+'''
 ''' TEMPORARY ROUTES '''
 
 @app.route( "/tmp/add_classroom", methods = ["POST"] )
