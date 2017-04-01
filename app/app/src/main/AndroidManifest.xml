@@ -3,7 +3,8 @@
     package="com.fresent.fresent">
 
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-feature android:name="android.hardware.wifi" android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
 
     <uses-feature
@@ -24,12 +25,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".camera.CameraActivity"></activity>
-        <activity android:name=".classes.AddClassActivity"></activity>
+        <activity android:name=".camera.CameraActivity" />
+        <activity android:name=".classes.AddClassActivity" />
+        <activity android:name=".student_attendance.FresentActivity"></activity>
     </application>
 
 </manifest>
