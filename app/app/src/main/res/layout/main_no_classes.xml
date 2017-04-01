@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/no_classes"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Classes"
+            android:textAppearance="@style/TextAppearance.AppCompat.Notification.Info"/>
+
+        <Button
+            android:id="@+id/button_add_class"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:background="?attr/colorPrimary"
+            android:textColor="@color/md_white_1000"
+            android:textSize="12dp"
+            android:textAllCaps="true"
+            android:drawableLeft="@drawable/ic_group_add_white_24dp"
+            android:padding="8dp"
+            android:text="Add Class"
+            android:textAppearance="@style/Widget.AppCompat.Button.Colored"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
