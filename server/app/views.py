@@ -1,6 +1,6 @@
 import os, uuid
 from app import app, db
-from config import FILE_UPLOAD_FOLDER, IMAGE_UPLOAD_FOLDER, CLASSIFIER_UPLOAD_FOLDER
+from config import FILE_UPLOAD_FOLDER, IMAGE_UPLOAD_FOLDER, CLASSIFIER_UPLOAD_FOLDER, CLASSROOM_UPLOAD_FOLDER
 from flask import request, jsonify, send_file, send_from_directory
 from .models import Student, Classroom
 
@@ -21,20 +21,33 @@ def get_classifier( student_id ):		#TO DO
 		return send_file( os.path.join( CLASSIFIER_UPLOAD_FOLDER, str( student.id ) + ".xml" ) )'''
 	return jsonify( {} )
 
-@app.route( "/send_nudes", methods = ["POST"] )
-def post_nudes():
-	student_id = request.form["student_id"]
+@app.route( "/send_class_photo", methods = ["POST"] )
+def post_photo():
+	classroom_id = request.form["classroom_id"]
 	file = request.form["file"]
 	
-	filename = str( uuid.uuid4() + ".jpg"
-	
-	target = open( os.path.join( IMAGE_UPLOAD_FOLDER, student_id + "/" + filename, "w" )
+	target = open( os.path.join( CLASSROOM_UPLOAD_FOLDER, classroom_id + ".jpg" ), "w" )
 	target.truncate()
 	
 	target.write( file )
 	target.close()
 	
+	# run face detection and recognition, will return object stuff to jsonify
 	
+	return str( classroom_id ) + " uploaded an image."
+
+@app.route( "/send_nudes", methods = ["POST"] )
+def post_nudes():
+	student_id = request.form["student_id"]
+	file = request.form["file"]
+	
+	filename = str( uuid.uuid4() ) + ".jpg"
+	
+	target = open( os.path.join( IMAGE_UPLOAD_FOLDER, student_id + "/" + filename ), "w" )
+	target.truncate()
+	
+	target.write( file )
+	target.close()	
 	
 	return student_id + " uploaded an image."
 
@@ -51,6 +64,11 @@ def add_classroom():
 	c = Classroom( name = name, course_code = course_code, section = section, school_year = school_year, school_term = school_term )
 	db.session.add( c )
 	db.session.commit()
+	
+	new_path = os.path.join( CLASROOM_UPLOAD_FOLDER, course_code + "/" )
+	if not os.path.exists( new_path ):
+		os.makedirs( new_path )
+	
 	return jsonify( { "name": name, "course_code": course_code, "section": section, "school_year": school_year, "school_term": school_term } )
 
 @app.route( "/tmp/add_student", methods = ["POST"] )
