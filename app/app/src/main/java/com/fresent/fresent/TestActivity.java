@@ -3,60 +3,38 @@ package com.fresent.fresent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ViewDebug;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fresent.fresent.base.BaseActivity;
 import com.fresent.fresent.base.BindContentView;
 import com.fresent.fresent.base.BindToolbar;
-import com.fresent.fresent.camera.CameraActivity;
 import com.fresent.fresent.classes.AddClassActivity;
 import com.fresent.fresent.classes.ClassListAdapter;
-import com.fresent.fresent.models.AttendanceCheck;
-import com.fresent.fresent.models.AttendanceCheckEntity;
 import com.fresent.fresent.models.ClassEntity;
-import com.fresent.fresent.models.StudentEnrollment;
 import com.fresent.fresent.models.StudentEnrollmentEntity;
 import com.fresent.fresent.models.StudentEntity;
 import com.fresent.fresent.student_attendance.FresentActivity;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.requery.query.Condition;
-import io.requery.query.Operator;
-import io.requery.util.function.Consumer;
 
-@BindContentView(R.layout.activity_main)
+@BindContentView(R.layout.activity_test)
 @BindToolbar(R.id.toolbar)
-public class MainActivity extends BaseActivity {
+public class TestActivity extends BaseActivity {
 
     private static final String TAG = "MAIN";
     private static final int REQUEST_CAMERA = 1;
@@ -107,7 +85,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ClassEntity model = listAdapter.getItem( position );
-                MainActivity.this.gotoClassViewActivity( model );
+                TestActivity.this.gotoClassViewActivity( model );
             }
         });
 
@@ -150,8 +128,8 @@ public class MainActivity extends BaseActivity {
                 .subscribe(new io.reactivex.functions.Consumer<ClassEntity>() {
                     @Override
                     public void accept(ClassEntity classEntity) throws Exception {
-                        MainActivity.this.classModels.add( classEntity );
-                        MainActivity.this.listAdapter.notifyDataSetChanged();
+                        TestActivity.this.classModels.add( classEntity );
+                        TestActivity.this.listAdapter.notifyDataSetChanged();
                     }
                 });
     }
@@ -265,8 +243,8 @@ public class MainActivity extends BaseActivity {
                         }
 
                         String className = model.getCourseCode() + " - " + model.getSection();
-                        MainActivity.this.classModels.clear();
-                        MainActivity.this.fillClassModel();
+                        TestActivity.this.classModels.clear();
+                        TestActivity.this.fillClassModel();
                         onReceiveClassEntity( model );
                         Toast.makeText(getApplicationContext(),
                                 "'" + className + "' successfully added", Toast.LENGTH_SHORT)
