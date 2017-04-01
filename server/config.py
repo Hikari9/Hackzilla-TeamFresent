@@ -5,6 +5,5 @@ SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join( basedir, "app.db" )
 SQLALCHEMY_MIGRATE_REPO = os.path.join( basedir, "db_repository" )
 
 FILE_UPLOAD_FOLDER = os.path.join( basedir, "files" )
-IMAGE_UPLOAD_FOLDER = os.path.join( basedir, "files/images" )
-IMAGE_ALLOWED_EXTENSIONS = set( ["png", "jpg", "jpeg"] )
-CLASSIFIER_UPLOAD_FOLDER = os.path.join( basedir, "files/classfiers" )
+IMAGE_UPLOAD_FOLDER = os.path.join( FILE_UPLOAD_FOLDER, "images" )
+CLASSIFIER_UPLOAD_FOLDER = os.path.join( FILE_UPLOAD_FOLDER, "classifiers" )

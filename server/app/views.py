@@ -1,5 +1,6 @@
 import os, uuid
 from app import app, db
+from config import FILE_UPLOAD_FOLDER, IMAGE_UPLOAD_FOLDER, CLASSIFIER_UPLOAD_FOLDER
 from flask import request, jsonify, send_file, send_from_directory
 from werkzeug.utils import secure_filename
 from .models import Student, Classroom
@@ -18,8 +19,7 @@ def get_classifier( student_id ):		#TO DO
 	student_query = Student.query.filter_by( id = student_id )
 	if student_query.count() > 0:
 		student = student_query.first()
-		return send_file( os.path.join( app.config["CLASSIFIER_UPLOAD_FOLDER"], student.id + ".xml" ) )
-		#return student.id + " " + student.first_name
+		return send_file( os.path.join( CLASSIFIER_UPLOAD_FOLDER, str( student.id ) + ".xml" ) )
 	return jsonify( {} )
 
 @app.route( "/send_nudes", methods = ["POST"] )
@@ -27,7 +27,7 @@ def post_nudes():
 	student_id = request.form["student_id"]
 	file = request.form["file"]
 	
-	target = open( os.path.join( app.config["IMAGE_UPLOAD_FOLDER"], student_id + "/" + str( uuid.uuid4() ) + ".jpg" ), "w" )
+	target = open( os.path.join( IMAGE_UPLOAD_FOLDER, student_id + "/" + str( uuid.uuid4() ) + ".jpg" ), "w" )
 	target.truncate()
 	
 	target.write( file )
@@ -61,7 +61,7 @@ def add_student():
 	db.session.add( s )
 	db.session.commit()
 	
-	os.makedirs( os.path.join( app.config["IMAGE_UPLOAD_FOLDER"], id + "/" ) )
+	os.makedirs( os.path.join( IMAGE_UPLOAD_FOLDER, id + "/" ) )
 	
 	return jsonify( { "id": id, "first_name": first_name, "middle_name": middle_name, "last_name": last_name } )
 
