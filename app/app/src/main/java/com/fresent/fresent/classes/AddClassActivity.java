@@ -1,6 +1,7 @@
 package com.fresent.fresent.classes;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,8 @@ import butterknife.OnItemClick;
 @BindContentView(R.layout.activity_add_class)
 public class AddClassActivity extends BaseActivity {
 
+    private static final int REQUEST_QR_CODE = 1;
+
     private EditText name, code, section, term, sy, qr;
 
     @Override
@@ -33,9 +36,41 @@ public class AddClassActivity extends BaseActivity {
 
     @OnClick(R.id.qrScan)
     protected void gotoQRScanner(View v) {
-        Toast.makeText(getApplicationContext(),
-                "TODO", Toast.LENGTH_SHORT)
+        try {
+            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
+            startActivityForResult(intent, REQUEST_QR_CODE);
+        } catch (Exception e) {
+            Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
+            Toast.makeText(this, "Please install Google QR Code Scanner for this feature", Toast.LENGTH_LONG)
                 .show();
+            startActivity(marketIntent);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_QR_CODE) {
+            if (resultCode == RESULT_OK) {
+                String contents = data.getStringExtra("SCAN_RESULT");
+                handleQRCode(contents);
+            }
+        }
+    }
+
+    /**
+     * Handles the dispatching of QR Code
+     * @param contents
+     */
+    private void handleQRCode(final String contents) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(AddClassActivity.this, contents, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @OnClick(R.id.addNewClass)
